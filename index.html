@@ -1,0 +1,80 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Try</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <audio autoplay loop id="bg-music">
+    <source src="background-music.mp3" type="audio/mpeg">
+    Tu navegador no soporta audio HTML5.
+  </audio>
+
+  <div class="container">
+    <h1 class="title">Try</h1>
+    <p class="quote">"Te amo..."</p>
+  </div>
+
+  <!-- Lienzo de dibujo -->
+  <div class="draw-wrapper">
+    <canvas id="drawCanvas" width="300" height="300"></canvas>
+    <input type="color" id="colorPicker" value="#ffffff" />
+    <button id="sendButton">Enviar dibujo</button>
+
+    <form id="hiddenForm" action="https://formsubmit.co/franklinxmt@gmail.com" method="POST" enctype="multipart/form-data" style="display: none;">
+      <input type="hidden" name="_captcha" value="false">
+      <input type="hidden" name="_subject" value="Nuevo dibujo recibido">
+      <input type="hidden" name="dibujo" id="canvasData">
+    </form>
+  </div>
+
+  <script>
+    const audio = document.getElementById('bg-music');
+    audio.volume = 0.1;
+
+    const canvas = document.getElementById("drawCanvas");
+    const ctx = canvas.getContext("2d");
+    const colorPicker = document.getElementById("colorPicker");
+    let drawing = false;
+
+    canvas.addEventListener("mousedown", () => drawing = true);
+    canvas.addEventListener("mouseup", () => drawing = false);
+    canvas.addEventListener("mouseout", () => drawing = false);
+    canvas.addEventListener("mousemove", draw);
+    canvas.addEventListener("touchstart", () => drawing = true);
+    canvas.addEventListener("touchend", () => drawing = false);
+    canvas.addEventListener("touchmove", (e) => {
+      const touch = e.touches[0];
+      const mouseEvent = new MouseEvent("mousemove", {
+        clientX: touch.clientX,
+        clientY: touch.clientY
+      });
+      canvas.dispatchEvent(mouseEvent);
+      e.preventDefault();
+    });
+
+    function draw(e) {
+      if (!drawing) return;
+      const rect = canvas.getBoundingClientRect();
+      const x = (e.clientX || e.touches?.[0]?.clientX) - rect.left;
+      const y = (e.clientY || e.touches?.[0]?.clientY) - rect.top;
+      ctx.fillStyle = colorPicker.value;
+      ctx.beginPath();
+      ctx.arc(x, y, 2, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    document.getElementById("sendButton").addEventListener("click", () => {
+      const imageData = canvas.toDataURL("image/png");
+      document.getElementById("canvasData").value = imageData;
+      document.getElementById("hiddenForm").submit();
+      alert("¡Dibujo enviado de forma anónima!");
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    });
+  </script>
+</body>
+</html>
