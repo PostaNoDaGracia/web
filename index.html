@@ -4,27 +4,37 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Try - Info</title>
+  <title>Try</title>
   <link rel="stylesheet" href="style.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <div class="container">
-    <h1 class="title">Try</h1>
-    <p class="quote">"Los amo a todos"</p>
-    <button id="playMusic">Activar música</button>
+  <div class="container three-d">
+    <h1 class="title glow">Try</h1>
+    <p class="quote fade-in">"los amo a todos"</p>
   </div>
 
   <div class="draw-wrapper">
     <canvas id="drawCanvas" width="300" height="300"></canvas>
     <input type="color" id="colorPicker" value="#ffffff" />
-    <button id="sendButton">Enviar dibujo</button>
+    <textarea id="messageInput" placeholder="Escribe un mensaje..." rows="2"></textarea>
+    <div class="button-row">
+      <button id="clearButton">🧹 Borrar dibujo</button>
+      <button id="sendButton">Enviar dibujo</button>
+    </div>
 
     <form id="hiddenForm" action="https://formsubmit.co/franklinxmt@gmail.com" method="POST" enctype="multipart/form-data" style="display: none;">
       <input type="hidden" name="_captcha" value="false">
       <input type="hidden" name="_subject" value="Nuevo dibujo recibido">
       <input type="hidden" name="dibujo" id="canvasData">
+      <input type="hidden" name="mensaje" id="mensajeTexto">
     </form>
+  </div>
+
+  <div class="music-controls">
+    <button id="playMusic" class="pulse">▶️ Música</button>
+    <button id="muteMusic">🔇</button>
+    <input type="range" id="volumeControl" min="0" max="1" step="0.01" value="0.2" />
   </div>
 
   <audio id="bg-music" loop>
@@ -38,16 +48,30 @@
     const colorPicker = document.getElementById("colorPicker");
     const playMusicBtn = document.getElementById("playMusic");
     const audio = document.getElementById("bg-music");
+    const clearButton = document.getElementById("clearButton");
+    const messageInput = document.getElementById("messageInput");
+    const muteBtn = document.getElementById("muteMusic");
+    const volumeControl = document.getElementById("volumeControl");
 
     let drawing = false;
     let lastX = 0;
     let lastY = 0;
 
     playMusicBtn.addEventListener("click", () => {
-      audio.volume = 0.2;
+      audio.volume = parseFloat(volumeControl.value);
       audio.play();
       playMusicBtn.disabled = true;
+      playMusicBtn.classList.remove("pulse");
       playMusicBtn.textContent = "🎵 Música activada";
+    });
+
+    muteBtn.addEventListener("click", () => {
+      audio.muted = !audio.muted;
+      muteBtn.textContent = audio.muted ? "🔈" : "🔇";
+    });
+
+    volumeControl.addEventListener("input", () => {
+      audio.volume = parseFloat(volumeControl.value);
     });
 
     function getPos(e) {
@@ -89,12 +113,18 @@
     canvas.addEventListener("touchend", endDraw);
     canvas.addEventListener("touchcancel", endDraw);
 
+    clearButton.addEventListener("click", () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    });
+
     document.getElementById("sendButton").addEventListener("click", () => {
       const imageData = canvas.toDataURL("image/png");
       document.getElementById("canvasData").value = imageData;
+      document.getElementById("mensajeTexto").value = messageInput.value;
       document.getElementById("hiddenForm").submit();
-      alert("¡Dibujo enviado!");
+      alert("¡Dibujo y mensaje enviados!");
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+      messageInput.value = "";
     });
   </script>
 </body>
