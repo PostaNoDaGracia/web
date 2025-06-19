@@ -139,6 +139,9 @@ textarea#messageInput {
   position: fixed;
   bottom: 20px;
   left: 20px;
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
   background: rgba(0, 0, 0, 0.65);
   padding: 8px 12px;
   border-radius: 10px;
@@ -167,4 +170,79 @@ textarea#messageInput {
 .music-controls input[type="range"] {
   height: 4px;
   accent-color: #00e0ff;
+}
+
+.quote {
+  margin-bottom: 2rem;
+}
+
+
+.mode-toggle {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 20;
+}
+
+#toggleMode {
+  background: #ffffff33;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  backdrop-filter: blur(5px);
+}
+
+#toggleMode:hover {
+  background: #ffffff55;
+}
+
+body.dark-mode {
+  background: linear-gradient(120deg, #121212, #1e1e1e);
+  color: #eee;
+}
+
+body.dark-mode .container {
+  color: white;
+}
+
+body.dark-mode .draw-wrapper,
+body.dark-mode .music-controls {
+  background-color: #111;
+}
+
+body.dark-mode textarea,
+body.dark-mode input[type="color"] {
+  background-color: #333;
+  color: white;
+}
+
+.gallery-preview {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 200px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 12px;
+  padding: 10px;
+  color: white;
+  font-size: 0.85rem;
+  z-index: 10;
+}
+
+.gallery-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 300px;
+  overflow-y: auto;
+  margin-top: 6px;
+}
+
+.gallery-item {
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid #ccc;
 }
